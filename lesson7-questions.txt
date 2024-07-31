@@ -4,6 +4,7 @@ Questions for Lesson 7
 before some or all of the controller actions execute?  Where can you put that
 change so that it affects all controllers?
 
+    The before_action method goes at the top of a controller to run a method before any other methods are ran. You can put it in the Application Controller so it affects all controllers since the controllers inherit from that class.
 
 
 2. Consider the following statement:
@@ -14,13 +15,16 @@ This creates several files, including two you need to know about.  What are they
 After you do this statement but before starting the rails server, you have to do another
 command.  What is that command?
 
-
+    The migration and the model file are created. The migration file contains the instructions for creating the subscriptions table in the db and the model for subscriptions is created as well. 
 
 3. What table is created as a result of the migration described above? What are the column
 names in that table? What is the primary key? What are the foreign keys?  What does a 
 foreign key do?
 
 
+  The subscriptions table is created. The column names are id, forum_id, user_id, priority, created_at, and updated_at.
+  The primary key is id which rails creates to identify each record in the table.
+  The foreign keys are forum_id and user_id which come from the forum and user tables. This helps to reference which subscription is associated which which user or forum, showing the connection between a row in the subscriptions table and another table.
 
 4. You have the following lines in the Subscription model:
 
@@ -32,7 +36,7 @@ that if you have a @subscription (an instance of Subscription), you have a coupl
 used to refer to associated database methods.  What are those methods?  (Actually there are a few,
 but there are two in particular you should know.)
 
-
+    There are getter and setter methods that were created like @subscription.forum or @subscription.user = "whatever_value".
 
 5. You have the following lines in the User model.
 
@@ -40,10 +44,10 @@ has_many :subscriptions
 has_many :posts
 has_many :forums, through: :subscriptions
 
-What are threee important methods that are available to instances of the user model because
+What are three important methods that are available to instances of the user model because
 of these lines?
 
-
+    Getter, setter, and association  methods.
 
 6. Suppose that user is an instance of the User class. What kind of object is returned by
 user.subcriptions?  Hint: To find out, go into the Rails console for your application.
@@ -67,13 +71,16 @@ Try that last line.  You will see that it creates a subscription object, but tha
 object is not entirely empty.  Which attribute is set? Where does it get that
 value?
 
-
+    A ActiveRecord::Associations::CollectionProxy is returned by user.subscriptions.
+    User_id is set and it gets that value from the first record in the user table.
 
 7. Suppose that user is an instance of User, and forum is an instance of Forum.  What
 Active Record Statement could you use to retrieve all the user's posts for that
 forum?  Hint: You need to have a where in your statement. Try this out in the console.
 You will see the SQL that is executed logged to the screen.  What is that SQL?
 
+    user.posts.where(forum_id: forum.id)
+    SELECT "posts".* FROM "posts" WHERE "posts"."user_id" = ? AND "posts"."forum_id" = ?
 
 
 8. You have the following method in your posts controller:
@@ -87,6 +94,7 @@ You will see the SQL that is executed logged to the screen.  What is that SQL?
 There is a security exposure, a risk that a hacker could do damage.  What is that
 risk? What two things are done in your code to prevent the risk?
 
+In the private section we have a method called check_access makes sure that user_id of the post matches the user currently logged in (stored in the session). The post_params method adds a parameter so that the post is associated with the current user.
 
 
 9. The routes for subscriptions are nested under the forum routes.  How does this
@@ -95,11 +103,13 @@ params hash to the subscriptions controller as a result of this nesting? Which r
 are unaffected by the nesting?
 
 
+  The nesting changes the URLs to be able to have routes like /forums/:forum_id/subscriptions/:id. The additional hash key and value that is passed is forum_id. Deleting is unaffected by nesting because of the shallow option.
 
 
 10. Every action method must do exactly one of two things -- that is, each
 method may do all sorts of logic, but at the end, it has to do one of two
 things, depending on the outcome of the logic.  What are those two things?
 
+  It has to render a view or redirect the user.
 
 

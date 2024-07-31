@@ -1,5 +1,20 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy logon ]
+  before_action :set_user, only: %i[ show edit update destroy logon]
+
+  def logon
+    session[:current_user] = @user.id
+    redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+  end
+  
+  def logoff
+    session.delete(:current_user)
+    redirect_to users_path, notice: "You have logged off."
+  end
+
+
+  # GET /users or /users.json
+  def index
+  end
 
   # GET /users/1 or /users/1.json
   def show
@@ -50,16 +65,6 @@ class UsersController < ApplicationController
       format.html { redirect_to users_url, notice: "User was successfully destroyed." }
       format.json { head :no_content }
     end
-  end
-
-  def logon
-    session[:current_user] = @user.id
-    redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
-  end
-  
-  def logoff
-    session.delete(:current_user)
-    redirect_to users_path, notice: "You have logged off."
   end
 
   private
