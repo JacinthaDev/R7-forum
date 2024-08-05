@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   before_action :check_logon, except: %w[show]
   before_action :set_forum, only: %w[create new]
   before_action :set_post, only: %w[show edit update destroy]
-  before_action :check_access, only: %w[edit update delete] # access control!! a user can only
+  before_action :check_access, only: %w[edit update destroy] # access control!! a user can only
   # edit or update or delete their own posts
 
   def create
