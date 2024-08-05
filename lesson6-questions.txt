@@ -21,7 +21,7 @@ that describes the route.  How do you do that? What variable is created?
 
 5. What command shows the routes?
 
-  bin/bash routes
+  bin/rails routes
 
 6. How can you start the Rails console? How can you do CRUD operations from the console?
 
