@@ -55,13 +55,13 @@ class PostsController < ApplicationController
   end
 
   def check_access
-    if @post.user_id != session[:current_user][:id]
+    if @post.user_id != session[:current_user]
       redirect_to forums_path, notice: "That's not your post, so you can't change it."
     end
   end
 
   def post_params   # security check, also known as "strong parameters"
-    params[:post][:user_id] = session[:current_user]["id"] 
+    params[:post][:user_id] = session[:current_user]
     # here we have to add a parameter so that the post is associated with the current user
     params.require(:post).permit(:title,:content,:user_id)
   end
