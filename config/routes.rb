@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   post '/users', to: 'users#create'
   patch '/users/:id', to: 'users#update'
   delete '/users/logoff', to: 'users#logoff', as: 'user_logoff'
-  delete '/users/:id', to: 'users#delete'
+  delete '/users/:id', to: 'users#destroy'
   resources :forums do
     resources :posts, shallow: true, except: [:index]
     resources :subscriptions, shallow: true, except: [:index]
