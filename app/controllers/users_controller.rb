@@ -1,16 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy logon]
-
-  def logon
-    session[:current_user] = @user.id
-    redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
-  end
-  
-  def logoff
-    session.delete(:current_user)
-    redirect_to users_path, notice: "You have logged off."
-  end
-
+  before_action :set_user, only: %i[ logon show edit update destroy ]
+  before_action :check_access, only: %i[ edit ]
+  before_action :prevent_self_deletion, only: [:destroy]
 
   # GET /users or /users.json
   def index
@@ -68,10 +59,42 @@ class UsersController < ApplicationController
     end
   end
 
+
+  def logon
+    if session[:current_user].present? #look into what .present? does its super useful when error handling
+      redirect_to users_path, notice: "You must logout before you login as another user."
+    else
+        session[:current_user] = @user.id
+        redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+    end
+  end
+
+  # def logon
+  #   session[:current_user] = @user.id
+  #   redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+  # end
+  
+  def logoff
+    session.delete(:current_user)
+    redirect_to users_path, notice: "You have logged off."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def check_access
+      if @user.id != session[:current_user]
+        redirect_to users_path, notice: "You cannot modify this user."
+      end
+    end
+
+    def prevent_self_deletion
+      if @user.id == session[:current_user]
+        redirect_to users_path, notice: "You cannot delete your own account while logged in. Please log out first."
+      end
     end
 
     # Only allow a list of trusted parameters through.
@@ -79,3 +102,4 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :skill_level)
     end
 end
+
