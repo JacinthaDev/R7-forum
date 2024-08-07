@@ -1,14 +1,11 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy logon ]
+  before_action :set_user, only: %i[ logon show edit update destroy ]
+  before_action :check_access, only: %i[ edit ]
+  before_action :prevent_self_deletion, only: [:destroy]
 
   # GET /users or /users.json
   def index
     @users = User.all
-    if (session[:current_user])
-      @current_user = User.find(session[:current_user])
-    else
-      @current_user = nil
-    end
   end
 
   # GET /users/1 or /users/1.json
@@ -62,10 +59,20 @@ class UsersController < ApplicationController
     end
   end
 
+
   def logon
-    session[:current_user] = @user.id
-    redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+    if session[:current_user].present? #look into what .present? does its super useful when error handling
+      redirect_to users_path, notice: "You must logout before you login as another user."
+    else
+        session[:current_user] = @user.id
+        redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+    end
   end
+
+  # def logon
+  #   session[:current_user] = @user.id
+  #   redirect_to users_path, notice: "Welcome #{@user.name}. You are logged in."
+  # end
   
   def logoff
     session.delete(:current_user)
@@ -78,8 +85,21 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
+    def check_access
+      if @user.id != session[:current_user]
+        redirect_to users_path, notice: "You cannot modify this user."
+      end
+    end
+
+    def prevent_self_deletion
+      if @user.id == session[:current_user]
+        redirect_to users_path, notice: "You cannot delete your own account while logged in. Please log out first."
+      end
+    end
+
     # Only allow a list of trusted parameters through.
     def user_params
       params.require(:user).permit(:name, :skill_level)
     end
 end
+

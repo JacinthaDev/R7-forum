@@ -1,0 +1,39 @@
+📝 bin/rails g scaffold subscription forum:references user:references priority:integer --skip-collision-check --skip-routes --no-migration
+```
+We tell the generate scaffold command to skip some steps because we already have the model, migration, and routes we need.  For some reason, ```--skip-routes``` doesn't work, **so you need to take ```resources :subscriptions``` out of the config/routes.rb.**  We didn't generate a migration, so there is no need to do a db:migrate.
+
+
+
+📝 def set_subscription
+  @subscription = Subscription.find_by(id: params[:id], user_id: @current_user.id)
+end
+```
+Note the change to set_subscription!  We not only search on ```params[:id]```, but also on the ```@current_user.id```, and only return a value if BOTH of these SQL WHERE conditions match. This is authorization checking.  We do not want one user to be able to change or delete another user's subscriptions, so we make sure that the subscription is for the currently logged on user.
+
+📝
+
+<% if subscription.id
+
+
+ _form file has an udnerscore at the beginning so we know it's  a partial. The edit and new file are rendering the partial. That's where _form is getting this information from. 
+
+    url = subscription_path
+  else 
+    url = forum_subscriptions_path(subscription.forum_id)
+
+
+ forum and forum_id are the same. When you assign the forum_id to the subscription on line 20 in posts controllers, you can just refer to it as forum bc rails knows from the association in the model that forum is pointing to the forum_id to which the subscription belongs. %>
+  end 
+
+
+
+📝
+📝📝📝📝
+
+
+What are we doing on line 109?
+
+
+Line 126?
+
+lien 139?
