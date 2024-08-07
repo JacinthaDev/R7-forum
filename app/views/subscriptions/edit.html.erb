@@ -1,0 +1,11 @@
+<h1>Editing subscription</h1>
+
+<%= render "form", subscription: @subscription %>
+#subscription in white is a local variable that's set equal to @subscription
+
+<br>
+
+<div>
+  <%= link_to "Show this subscription", @subscription %> |
+  <%= link_to "Back to subscriptions", subscriptions_path %>
+</div>
