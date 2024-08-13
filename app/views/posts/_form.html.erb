@@ -29,5 +29,6 @@
 
     <div>
         <%= form.submit %>
+        <%#In most cases default for a submit is Put/patch, so when we have url= post_path above, even though there's 4 actions attached to that one URL, rails knows to update. %>
     </div>
 <% end %>
