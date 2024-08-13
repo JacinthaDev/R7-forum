@@ -4,7 +4,7 @@ Questions for Lesson 7
 before some or all of the controller actions execute?  Where can you put that
 change so that it affects all controllers?
 
-    before_action:, if you want it to affect all controllers you put it in the parent controller, Application Record from which all other classes inherit.
+    before_action:, if you want it to affect all controllers you put it in the parent controller, Application Controller from which all other classes inherit.
 
 
 
@@ -18,7 +18,7 @@ After you do this statement but before starting the rails server, you have to do
 command.  What is that command?
 
     This creates a timestamped migration file and a model file for subscriptions. 
-    bin/rails db migrate
+    bin/rails db:migrate
 
 
 
